@@ -471,7 +471,7 @@ if uploaded_train is not None and uploaded_test is not None and uploaded_val is 
         df_hmm = df_hmm.dropna()
         
         features = [c for c in ['market_cap', 'liquidity'] if c in df_hmm.columns]
-        X_hmm = df_hmm[features].fillna(method='ffill')
+        X_hmm = df_hmm[features].ffill()
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X_hmm)
         
