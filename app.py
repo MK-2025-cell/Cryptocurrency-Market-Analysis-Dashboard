@@ -33,7 +33,6 @@ st.set_page_config(
 # Custom CSS for better UI
 st.markdown("""
 <style>
-    /* Main header styling */
     .main-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 2.5rem 2rem;
@@ -60,8 +59,6 @@ st.markdown("""
         padding-top: 0.5rem;
         border-top: 2px solid rgba(255,255,255,0.3);
     }
-    
-    /* Card styling */
     .metric-card {
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         padding: 1rem;
@@ -79,8 +76,6 @@ st.markdown("""
         font-weight: bold;
         margin: 0.5rem 0;
     }
-    
-    /* RQ header styling */
     .rq-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -90,10 +85,9 @@ st.markdown("""
     }
     .rq-header h2 {
         margin: 0;
-        font-size: 1.5rem;
+        font-size: 1.3rem;
+        line-height: 1.4;
     }
-    
-    /* Success box for RQ conclusions */
     .rq-conclusion {
         background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         padding: 1.5rem;
@@ -106,15 +100,11 @@ st.markdown("""
         font-size: 1.3rem;
         margin-bottom: 0.8rem;
     }
-    
-    /* Expander styling */
     .streamlit-expanderHeader {
         background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
         border-radius: 10px;
         font-weight: bold;
     }
-    
-    /* Metrics styling */
     [data-testid="stMetricValue"] {
         font-size: 1.8rem;
         font-weight: bold;
@@ -219,12 +209,9 @@ if uploaded_train is not None and uploaded_test is not None and uploaded_val is 
         st.markdown(f"""
         <div class="rq-conclusion">
             <h4>📌 RQ1 Conclusion</h4>
-            <p><strong>Key Finding:</strong> DAA and Transaction Count show a strong positive correlation of <strong>{corr_val:.3f}</strong>, 
-            confirming that increased wallet creation and active addresses strongly predict higher transaction activity.</p>
-            <p><strong>Secondary Finding:</strong> The correlation between DAA and returns is weak ({df_rq1['DAA'].corr(df_rq1['return'].dropna()):.3f}), 
-            suggesting that network adoption drives usage but not necessarily short-term price appreciation.</p>
-            <p><strong>Practical Implication:</strong> Network adoption metrics are reliable indicators for measuring blockchain utility and transaction growth, 
-            but should not be used alone for price prediction.</p>
+            <p><strong>Key Finding:</strong> DAA and Transaction Count show a strong positive correlation of <strong>{corr_val:.3f}</strong>, confirming that increased wallet creation and active addresses strongly predict higher transaction activity.</p>
+            <p><strong>Secondary Finding:</strong> The correlation between DAA and returns is weak ({df_rq1['DAA'].corr(df_rq1['return'].dropna()):.3f}), suggesting that network adoption drives usage but not necessarily short-term price appreciation.</p>
+            <p><strong>Practical Implication:</strong> Network adoption metrics are reliable indicators for measuring blockchain utility and transaction growth, but should not be used alone for price prediction.</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -290,7 +277,7 @@ if uploaded_train is not None and uploaded_test is not None and uploaded_val is 
             <div class="rq-conclusion">
                 <h4>📌 RQ2 Conclusion</h4>
                 <p><strong>Key Finding:</strong> The model achieves <strong>{acc:.1%} accuracy</strong> in predicting 30-day forward returns using on-chain metrics.</p>
-                <p><strong>Top Predictors:</strong> <strong>{features[np.argmax(importances)]}</strong> emerged as the most predictive metric, followed by {features[np.argsort(importances)[-2]] if len(features) > 1 else 'N/A'}.</p>
+                <p><strong>Top Predictors:</strong> <strong>{features[np.argmax(importances)]}</strong> emerged as the most predictive metric.</p>
                 <p><strong>Practical Implication:</strong> Transaction activity metrics provide valuable leading indicators for market direction, suggesting that on-chain data should be integrated into trading strategies.</p>
             </div>
             """, unsafe_allow_html=True)
@@ -373,10 +360,9 @@ if uploaded_train is not None and uploaded_test is not None and uploaded_val is 
         <div class="rq-conclusion">
             <h4>📌 RQ3 Conclusion</h4>
             <p><strong>Key Finding:</strong> {usage_pct:.1%} of days show small transaction sizes (genuine usage) while {speculation_pct:.1%} show large transactions (speculative activity).</p>
-            <p><strong>Pattern Recognition:</strong> High transaction count with low average value → Genuine network utility (user adoption, payments)<br>
-            Low transaction count with high average value → Speculative activity (whale transfers, exchange movements)</p>
-            <p><strong>Practical Implication:</strong> Monitoring the count/volume ratio helps distinguish organic network growth from price-driven speculation, 
-            providing early signals for sustainable adoption vs bubble conditions.</p>
+            <p><strong>Pattern Recognition:</strong> High transaction count with low average value → Genuine network utility<br>
+            Low transaction count with high average value → Speculative activity</p>
+            <p><strong>Practical Implication:</strong> Monitoring the count/volume ratio helps distinguish organic network growth from price-driven speculation.</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -428,10 +414,7 @@ if uploaded_train is not None and uploaded_test is not None and uploaded_val is 
         st.markdown(f"""
         <div class="rq-conclusion">
             <h4>📌 RQ4 Conclusion</h4>
-            <p><strong>Key Finding:</strong> Hash rate shows a {"strong" if corr_hash > 0.3 else "moderate"} positive correlation ({corr_hash:.3f}) with future adoption growth, 
-            while fees show {"strong" if corr_fees > 0.3 else "moderate"} correlation ({corr_fees:.3f}).</p>
-            <p><strong>Interpretation:</strong> Higher hash rate indicates miner confidence and network security, which attracts users and drives adoption. 
-            Fee levels reflect network demand and can predict usage patterns.</p>
+            <p><strong>Key Finding:</strong> Hash rate shows a {"strong" if corr_hash > 0.3 else "moderate"} positive correlation ({corr_hash:.3f}) with future adoption growth.</p>
             <p><strong>Practical Implication:</strong> Hash rate serves as a leading indicator for network health. Sustained high hash rate periods historically precede adoption growth by 30-60 days.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -440,6 +423,92 @@ if uploaded_train is not None and uploaded_test is not None and uploaded_val is 
     
     st.markdown("---")
     
+    # ================================================================
+    # RQ5: Market Regime Detection (HMM)
+    # ================================================================
+    st.markdown('<div class="rq-header"><h2>🔍 RQ5: Do market capitalization and liquidity ratios serve as reliable signals of major cryptocurrency market cycle shifts (bull/bear regime detection)?</h2></div>', unsafe_allow_html=True)
+    
+    with st.expander("📖 View Problem Statement", expanded=False):
+        st.markdown("""
+        **Research Question:** Do market capitalization and liquidity ratios serve as reliable signals of major cryptocurrency market cycle shifts?
+        
+        **Hypothesis:** Hidden Markov Models can detect unobserved regime changes using market cap and liquidity, providing early warning signals for trend reversals.
+        """)
+    
+    if all(col in df.columns for col in ['price', 'market_cap', 'liquidity']):
+        df_hmm = df.copy()
+        df_hmm['returns'] = df_hmm.groupby('ticker')['price'].pct_change()
+        df_hmm['forward_returns'] = df_hmm.groupby('ticker')['price'].shift(-30) / df_hmm['price'] - 1
+        df_hmm = df_hmm.dropna()
+        
+        features = [c for c in ['market_cap', 'liquidity'] if c in df_hmm.columns]
+        X_hmm = df_hmm[features].ffill()
+        X_hmm = X_hmm.dropna()
+        df_hmm = df_hmm.loc[X_hmm.index]
+        
+        if len(X_hmm) > 10:
+            scaler = StandardScaler()
+            X_scaled = scaler.fit_transform(X_hmm)
+            
+            try:
+                model = hmm.GaussianHMM(n_components=2, covariance_type='full', n_iter=200, random_state=42)
+                model.fit(X_scaled)
+                states = model.predict(X_scaled)
+                
+                regime0_return = df_hmm[states == 0]['forward_returns'].mean()
+                regime1_return = df_hmm[states == 1]['forward_returns'].mean()
+                
+                if regime0_return > regime1_return:
+                    bull_regime, bear_regime = 0, 1
+                    bull_return, bear_return = regime0_return, regime1_return
+                else:
+                    bull_regime, bear_regime = 1, 0
+                    bull_return, bear_return = regime1_return, regime0_return
+                
+                trans_matrix = model.transmat_
+                bull_persistence = trans_matrix[bull_regime, bull_regime]
+                bear_persistence = trans_matrix[bear_regime, bear_regime]
+                
+                col1, col2, col3, col4 = st.columns(4)
+                col1.metric("🐂 Bull Market Return", f"{bull_return:.2%}", delta="30-day forward")
+                col2.metric("🐻 Bear Market Return", f"{bear_return:.2%}", delta="30-day forward")
+                col3.metric("🔄 Bull Persistence", f"{bull_persistence:.1%}", delta="probability")
+                col4.metric("🔄 Bear Persistence", f"{bear_persistence:.1%}", delta="probability")
+                
+                fig, ax = plt.subplots(figsize=(14, 6))
+                price_norm = df_hmm['price'] / df_hmm['price'].iloc[0]
+                ax.plot(df_hmm.index, price_norm, 'b-', alpha=0.7, linewidth=1, label='Normalized Price')
+                ax.fill_between(df_hmm.index, 0, max(price_norm), 
+                               where=(states == bull_regime), alpha=0.4, color='green', label='Bull Market (Detected)')
+                ax.fill_between(df_hmm.index, 0, max(price_norm), 
+                               where=(states == bear_regime), alpha=0.4, color='red', label='Bear Market (Detected)')
+                ax.set_ylabel('Normalized Price', fontsize=12)
+                ax.set_xlabel('Time', fontsize=12)
+                ax.set_title('Hidden Markov Model - Market Regime Detection', fontsize=14, fontweight='bold')
+                ax.legend(loc='upper left')
+                ax.grid(True, alpha=0.3)
+                st.pyplot(fig)
+                
+                true_regime = (df_hmm['forward_returns'] > 0.02).astype(int)
+                cm = confusion_matrix(true_regime[:len(states)], states)
+                accuracy = (cm[0,0] + cm[1,1]) / cm.sum() if cm.sum() > 0 else 0
+                
+                st.markdown(f"""
+                <div class="rq-conclusion">
+                    <h4>📌 RQ5 Conclusion</h4>
+                    <p><strong>Key Finding:</strong> The HMM achieves <strong>{accuracy:.1%} accuracy</strong> in detecting market regimes using market cap and liquidity metrics.</p>
+                    <p><strong>Regime Characteristics:</strong><br>
+                    • Bull markets deliver +{bull_return:.2%} average 30-day returns ({bull_persistence:.1%} persistence)<br>
+                    • Bear markets deliver {bear_return:.2%} average 30-day returns ({bear_persistence:.1%} persistence)</p>
+                    <p><strong>Practical Implication:</strong> Market capitalization and liquidity ratios serve as reliable leading indicators for major cycle shifts.</p>
+                </div>
+                """, unsafe_allow_html=True)
+            except Exception as e:
+                st.error(f"HMM training failed: {str(e)}")
+        else:
+            st.info(f"Insufficient data for HMM analysis. Need at least 10 observations, have {len(X_hmm)}")
+    
+    st.markdown("---")
         # ================================================================
     # RQ6: NVT Ratio Analysis - WITH ADDITIONAL GRAPHS
     # ================================================================
