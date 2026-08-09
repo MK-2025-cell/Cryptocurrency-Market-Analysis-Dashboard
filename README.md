@@ -82,7 +82,7 @@ streamlit run app.py
 
 ## Authors
 
-- **Maya KC** — Computer Science, Asian University for Women
+- **Maya KC** 
 - **Marzia Hassani**
 - **Sonam Tsokid Lama**
 - **Saraswoti Adhikari**
